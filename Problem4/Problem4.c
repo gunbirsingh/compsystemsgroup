@@ -3,21 +3,22 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
-#include <string.h>
-#include <ctype.h>
+
 
 struct evaluate{
+	int par;   // integer result for parent expression
+	int chi;   // integer result for child expression
+};
+pid_t pid1, pid2;
+void* shared_memory;
+
+int main()
+{
 	int int1;
 	char op1;
 	int int2;
 	char op2;
 	int int3;
-};
-
-int main()
-{
 	FILE *inputFile;
 	inputFile = fopen("inputFile.txt", "r");
 	if (inputFile == NULL){
