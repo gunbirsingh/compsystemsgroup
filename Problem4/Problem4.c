@@ -6,26 +6,76 @@
 
 
 struct evaluate{
-	int par;   // integer result for parent expression
 	int chi;   // integer result for child expression
 };
-pid_t pid1, pid2;
+const key_t key = 1234;
+pid_t pid;
 void* shared_memory;
 
 int main()
 {
+	// Declare input variables
 	int int1;
-	char op1;
 	int int2;
-	char op2;
 	int int3;
+
+	// Read input file
 	FILE *inputFile;
 	inputFile = fopen("inputFile.txt", "r");
 	if (inputFile == NULL){
 		printf("Error! File empty.\n");
-		return 0;
+		exit(EXIT_FAILURE);
 	}
 	else {
-		fscanf(inputFile, "%d %c %d %c %d ", int1, op1, int2, op2, int3);
+		fscanf(inputFile, "%d %d %d ", int1, int2, int3);
 	}
+
+	// Create shared memory
+	int shmid = shmget(key, sizeof(struct evaluate), 0666 | IPC_CREAT);
+	if (shmid == -1){
+		exit(EXIT_FAILURE);
+	}
+
+	// Fork child
+	pid = fork();
+	if (pid == 0){
+		shared_memory = shmat(shmid, (void*)0, 0);
+		if (shared_memory == (void*)-1){
+			exit(EXIT_FAILURE);
+		}
+		struct evaluate* shared_data = (struct evaluate*) shared_memory;
+		shared_data->chi = int2 + int3;
+
+		if (shmdt(shared_memory) == -1){
+			exit(EXIT_FAILURE);
+		}
+		exit(EXIT_SUCCESS);
+	}
+
+	// Wait for child process to terminate
+	int status_pid;
+	waitpid(pid, &status_pid, 0);
+
+	if (!WIFEXITED(status_pid)){
+		exit(EXIT_FAILURE);
+	}
+
+	// Parent attach memory
+	shared_memory = shmat(shmid, (void*)0, 0);
+	if (shared_memory == (void*)-1) exit(EXIT_FAILURE);
+	struct evaluate* shared_data = (struct evaluate*) shared_memory;
+
+	// Calculate and output result
+	int output = (int1)*(shared_data->chi);
+	printf("Result is %d\n", output);
+
+	// Detach from shared memory
+	if (shmdt(shared_memory) == -1){
+		exit(EXIT_FAILURE);
+	}
+	if (shmctl(shmid, IPC_RMID, 0) == -1){
+		exit(EXIT_FAILURE);
+	}
+
+	return EXIT_SUCCESS;
 }
