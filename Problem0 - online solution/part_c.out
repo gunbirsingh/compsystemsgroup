@@ -1,0 +1,18 @@
+hi, i'm process 29440 and my parent is 26572
+hi, i'm process 29440 and my parent is 26572
+hi, i'm process 29440 and my parent is 26572
+hi, i'm process 29441 and my parent is 29440
+hi, i'm process 29442 and my parent is 29440
+hi, i'm process 29441 and my parent is 29440
+hi, i'm process 29444 and my parent is 29441
+hi, i'm process 29443 and my parent is 29440
+hi, i'm process 29445 and my parent is 29442
+hi, i'm process 29442 and my parent is 29440
+hi, i'm process 29447 and my parent is 29444
+hi, i'm process 29446 and my parent is 29441
+hi, i'm process 29444 and my parent is 29441
+hi, i'm process 29441 and my parent is 29440
+hi, i'm process 29440 and my parent is 26572
+min: -100
+max: 100
+sum: -26054
