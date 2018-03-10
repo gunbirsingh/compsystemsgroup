@@ -1,0 +1,9 @@
+Hi I am process: 24748 and my parent is: 24747
+Hi I am process: 24749 and my parent is: 24748
+Hi I am process: 24750 and my parent is: 24749
+
+max: 100
+
+min: 25
+
+sum: 155

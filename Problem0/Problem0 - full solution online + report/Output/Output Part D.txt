@@ -1,0 +1,5 @@
+Hi I'm  7527 and my parent is 7526
+Hi I'm  7528 and my parent is 7526
+minimum: 25
+maximum: 100
+sum: 155

@@ -1,0 +1,3 @@
+Minimum output is = 25 
+Maximum output is =  100 
+Sum is = 155 
