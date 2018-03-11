@@ -75,7 +75,7 @@ int main()
 
         int max = num[0];
         int min = num[0];
-    int total = 0;
+    	int total = 0;
         for (j = 0; j < 15; j++)
         {
            
