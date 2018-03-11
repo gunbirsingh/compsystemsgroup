@@ -1,0 +1,22 @@
+A 3 B C D
+B 3 E F G
+C 3 H I J
+D 3 K L M
+E 1 N
+F 1 O
+G 1 P
+H 1 Q
+I 1 R
+J 1 S
+K 1 T
+L 1 U
+M 1 V
+N 0 
+O 0
+P 0
+Q 0
+R 0
+S 0
+T 0
+U 0
+V 0

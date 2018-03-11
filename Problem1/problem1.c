@@ -18,17 +18,17 @@ struct procInfo proc[] = {
     { 'D', 0, { }, 12 },
 };
 
-char myId = 'A'; /* my proc id */
+char procId = 'A'; 
 int Value;
 
 void procfunction()
 {
     int i, j;
     int n = sizeof(proc) / sizeof(struct procInfo);
-    printf("Started proc %c, pid=%d\n", myId, getpid());
+    printf("Started process %c, that has pid:%d\n", procId, getpid());
     for(i = 0; i < n; i++)
     {
-        if(myId == proc[i].procName) 
+        if(procId == proc[i].procName) 
             break;
     }
     if(i < n) 
@@ -40,32 +40,32 @@ void procfunction()
             pids[j] = fork();
             if(pids[j] < 0)
             {
-                printf("Proc %c, pid=%d: fork failed\n", myId, getpid());
+                printf("Proc %c, pid=%d: fork failed\n", procId, getpid());
             }
             if(pids[j] == 0)
             {
-                myId = proc[i].children[j];
+                procId = proc[i].children[j];
                 procfunction();
                 return;
             }
             else
             {
-                printf("Proc %c, pid=%d: Forked %c, pid=%d\n", myId, getpid(), proc[i].children[j], pids[j]);
+                printf("Proc %c, pid=%d: Forked %c, pid=%d\n", procId, getpid(), proc[i].children[j], pids[j]);
             }
         }
-        printf("Proc %c, pid=%d: Waiting for children to end\n", myId, getpid());
+        printf("Proc %c, pid=%d: Waiting for children to end\n", procId, getpid());
         for(j = 0; j < proc[i].numChild; j++)
         {
             int status;
             if(pids[j] > 0) 
             {
                 waitpid(pids[j], &status, 0);
-                printf("Proc %c, pid=%d: Child exited with status %d\n", myId, getpid(), WEXITSTATUS(status));
+                printf("Proc %c, pid=%d: Child exited with status %d\n", procId, getpid(), WEXITSTATUS(status));
             }
         }
     }
     sleep(10);
-    printf("Proc %c, pid=%d: ending proc\n", myId, getpid());
+    printf("Proc %c, pid=%d: ending proc\n", procId, getpid());
 }
 int main()
 {
