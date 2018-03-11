@@ -1,0 +1,15 @@
+ Explain design decisions (fewer vs. more processes, process structure, etc.).
+Give one thing you have learned.
+
+Design choices.
+0a was simple, it was a single process (which doesn't require a fork) that sums all the numbers
+ and finds the max and min.
+ Part b was a bit harder, where each process spawned a process, but for this one I had a for loop for 
+ the total number of items in the list, then for each I spawned a process to deal add to the sum,
+ and check whether the new number was the new max or min.
+ Part b was the most complex, and I went about it like a binary search, or a merge sort. I took the whole list
+ and spawned two processes, one for the first half and one for the second. Each of those halved until there was a single number, which
+ was added to the sum and checked against the max and min like in part b.
+ 
+ I learned about pipes, and how a divide and conquer approach with multiple processes can speed up tasks when 
+compared to a single process. 
