@@ -2,13 +2,13 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
-/* Structures to define the proc tree */
+
 FILE* output;
 output=fopen("Output,txt", "w");
 
 struct procInfo
 {
-    char procName; /* A, B, C, D */
+    char procName; 
     int numChild;
     char children[5];
     int return_Value;
@@ -28,7 +28,7 @@ void procfunction()
 {
     int i, j;
     int n = sizeof(proc) / sizeof(struct procInfo);
-    fprintf(output,"Started process %c, that has pid:%d\n", procId, getpid());
+    fprintf(output,"Started process: %c, that has pid:%d\n", procId, getpid());
     for(i = 0; i < n; i++)
     {
         if(procId == proc[i].procName) 
