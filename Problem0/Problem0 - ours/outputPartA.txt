@@ -1,0 +1,5 @@
+The process id is 73032
+The parent process id is 57316
+Max= 10
+Min= 1
+Sum= 55

@@ -1,0 +1,18 @@
+Hi I'm  63004 and my parent is 115524
+Hi I'm  98472 and my parent is 63004
+Hi I'm  63836 and my parent is 98472
+Hi I'm  63004 and my parent is 115524
+Hi I'm  98472 and my parent is 63004
+Hi I'm  63004 and my parent is 115524
+Hi I'm  87728 and my parent is 63004
+Hi I'm  69808 and my parent is 115524
+Hi I'm  94616 and my parent is 115524
+Hi I'm  77388 and my parent is 94616
+Hi I'm  94616 and my parent is 115524
+Hi I'm  63004 and my parent is 115524
+Hi I'm  74320 and my parent is 63004
+Hi I'm  63004 and my parent is 115524
+Hi I'm  111808 and my parent is 115524
+minimum: 1
+maximum: 10
+sum: 55

@@ -1,0 +1,16 @@
+0 Hi I am process: 86376 and my parent is: 92692
+1 Hi I am process: 86376 and my parent is: 92692
+2 Hi I am process: 86376 and my parent is: 92692
+3 Hi I am process: 86376 and my parent is: 92692
+4 Hi I am process: 86376 and my parent is: 92692
+5 Hi I am process: 86376 and my parent is: 92692
+6 Hi I am process: 86376 and my parent is: 92692
+7 Hi I am process: 86376 and my parent is: 92692
+8 Hi I am process: 86376 and my parent is: 92692
+9 Hi I am process: 86376 and my parent is: 92692
+
+max: 10
+
+min: 1
+
+sum: 55
