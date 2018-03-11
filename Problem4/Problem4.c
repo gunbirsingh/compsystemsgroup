@@ -22,8 +22,10 @@ int main()
 	// Read input file
 	FILE *inputFile;
 	inputFile = fopen("inputFile.txt", "r");
+	FILE *output_file;
+	output_file = fopen("output.txt", "w");
 	if (inputFile == NULL){
-		printf("Error! File empty.\n");
+		fprintf(output_file, "Error! File empty.\n");
 		exit(EXIT_FAILURE);
 	}
 	else {
@@ -67,7 +69,7 @@ int main()
 
 	// Calculate and output result
 	int output = (int1)*(shared_data->chi);
-	printf("Result is %d\n", output);
+	fprintf(output_file, "Result is %d\n", output);
 
 	// Detach from shared memory
 	if (shmdt(shared_memory) == -1){
