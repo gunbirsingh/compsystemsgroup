@@ -24,16 +24,16 @@ tree root;
 void wait_status(pid_t pid, int status){
 	if (WIFEXITED(status))
 	{
-		fprintf(stderr, "Child with PID: %ld was temintaed correctly, exit status = %d\n", (long)pid, WEXITSTATUS(status));
+		fprintf(stderr, "Child with PID ID: %ld was ended correctly, exit status = %d\n", (long)pid, WEXITSTATUS(status));
 
 	}
 	else if (WIFSIGNALED(status))
 	{
-		fprintf(stderr, "Child with PID: %d was teminated by a ignal, signo = %d\n", pid, WTERMSIG(status));	
+		fprintf(stderr, "Child with PID ID: %d was ended by a signal, signal = %d\n", pid, WTERMSIG(status));	
 	}
 	else if (WIFSTOPPED(status))
 	{
-		fprintf(stderr, "Child with PID: %d has been stopped by a signal, signo %d\n", pid, WSTOPSIG(status));
+		fprintf(stderr, "Child with PID ID: %d was ended by a signal, signal =  %d\n", pid, WSTOPSIG(status));
 	}
 	else
 	{
@@ -50,9 +50,9 @@ void build_tree(tree f) {
 		f.wait = 0; 
 		if (f.wait == false)
 		{
-		cout << "leaf" << endl;
+		cout << "This is a leaf" << endl;
 		sleep(1);
-		cout << "node " << f.name << " done" << endl;
+		cout << "Node ID:" << f.name << " is done" << endl;
 		exit(0);		
 		}	
 	} 
@@ -61,7 +61,7 @@ void build_tree(tree f) {
 		}
 
 	for (tree g : f.children) {
-		cout << f.name << " forking for " << g.name << endl;
+		cout << "Node ID:" << f.name << " is forking for Node ID:" << g.name << endl;
 		pids.push_back(fork());
 		if (pids.back()) {
 			build_tree(g);	
@@ -71,13 +71,13 @@ void build_tree(tree f) {
 		}
 	}
 
-	cout << "node " << f.name << " waiting for: ";
+	cout << "Node ID" << f.name << " is waiting for: ";
 	for (pid_t pid : pids) {
 		cout << pid << ", ";
 	}
 	cout << endl;
 	while (wait(0) > 0);
-	cout << "node " << f.name << " done" << endl;
+	cout << "Node ID" << f.name << " is done" << endl;
 }
 
 bool insert_proc(tree& g, tree f) {
@@ -91,7 +91,7 @@ bool insert_proc(tree& g, tree f) {
 	return false;
 }
 
-void child_wait_finish(tree f){
+void wait_for_children(tree f){
 	if (f.children.size() == 0)
 	{
 		wait_status(f.pid, f.wait);
@@ -119,16 +119,17 @@ int main(int a, char** b) {
 		exit(-1);
 	}
 
-	ifstream file(b[1]);
 	string line;
 	vector<string> lines;
+	ifstream file(b[1]);
+	
 	while (getline(file, line)) {
 		lines.push_back(line);
 	}
 	file.close();
 
 	istringstream stream;
-	string tok;
+	string manz;
 	int num_children;
 
 	for (string line : lines) {
@@ -136,21 +137,21 @@ int main(int a, char** b) {
 
 		stream = istringstream(line);
 
-		getline(stream, tok, ' ');
-		node1.name = tok;
+		getline(stream, manz, ' ');
+		node1.name = manz;
 
-		getline(stream, tok, ' ');
-		num_children = atoi(tok.c_str());
+		getline(stream, manz, ' ');
+		num_children = atoi(manz.c_str());
 
-		while (getline(stream, tok, ' ')) {
+		while (getline(stream, manz, ' ')) {
 			tree node2;
-			node2.name = tok;
+			node2.name = manz;
 			node1.children.push_back(node2);
 		}
 		if (root.name == "") {
 			root = node1;
 		} else if (!insert_proc(root, node1)) {
-			cout << "Insert failed" << endl;
+			cout << "Inserting node failed" << endl;
 			exit(-1);
 		}
 	}

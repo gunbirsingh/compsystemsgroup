@@ -3,6 +3,9 @@
 #include <sys/wait.h>
 #include <unistd.h>
 /* Structures to define the proc tree */
+FILE* output;
+output=fopen("Output,txt", "w");
+
 struct procInfo
 {
     char procName; /* A, B, C, D */
@@ -25,7 +28,7 @@ void procfunction()
 {
     int i, j;
     int n = sizeof(proc) / sizeof(struct procInfo);
-    printf("Started process %c, that has pid:%d\n", procId, getpid());
+    fprintf(output,"Started process %c, that has pid:%d\n", procId, getpid());
     for(i = 0; i < n; i++)
     {
         if(procId == proc[i].procName) 
@@ -40,7 +43,7 @@ void procfunction()
             pids[j] = fork();
             if(pids[j] < 0)
             {
-                printf("Proc %c, pid=%d: fork failed\n", procId, getpid());
+                fprintf(output, "Proc %c, pid=%d: fork failed\n", procId, getpid());
             }
             if(pids[j] == 0)
             {
@@ -50,22 +53,22 @@ void procfunction()
             }
             else
             {
-                printf("Proc %c, pid=%d: Forked %c, pid=%d\n", procId, getpid(), proc[i].children[j], pids[j]);
+                fprintf(output, "Proc %c, pid=%d: Forked %c, pid=%d\n", procId, getpid(), proc[i].children[j], pids[j]);
             }
         }
-        printf("Proc %c, pid=%d: Waiting for children to end\n", procId, getpid());
+        fprintf(output, "Proc %c, pid=%d: Waiting for children to end\n", procId, getpid());
         for(j = 0; j < proc[i].numChild; j++)
         {
             int status;
             if(pids[j] > 0) 
             {
                 waitpid(pids[j], &status, 0);
-                printf("Proc %c, pid=%d: Child exited with status %d\n", procId, getpid(), WEXITSTATUS(status));
+                fprintf(output, "Proc %c, pid=%d: Child exited with status %d\n", procId, getpid(), WEXITSTATUS(status));
             }
         }
     }
     sleep(10);
-    printf("Proc %c, pid=%d: ending proc\n", procId, getpid());
+    fprintf(output,"Proc %c, pid=%d: ending proc\n", procId, getpid());
 }
 int main()
 {
