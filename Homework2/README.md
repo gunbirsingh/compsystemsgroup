@@ -1,2 +1,2 @@
-(1) Demonstration of Fibonacci sequence 
-(2) Implementation of the monitor
+- Demonstration of Fibonacci sequence 
+- Implementation of the monitor
