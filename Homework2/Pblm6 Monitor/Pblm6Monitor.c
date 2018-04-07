@@ -1,93 +1,57 @@
-#include <stdio.h>
+// Pblem 6 - Monitor Implementation 
+// HW 2
 
-int n = 10;// file id number
+#include<stdlib.h>
+#include<stdio.h>
+#include<unistd.h>
+#include<sys/ipc.h>
+#include<sys/sem.h>
+#include<semaphore.h>
 
-int sumOfID = 0;
 
-int numOfProcessWaiting = 0;
+// Variables
+int n = 10, sumProcessIDs = 0, waitingProcesses = 0; // sum of relevant process IDs (accessing file) initially zero, must be less than n && zero initial waiting processes
+semaphore mutex = 1;   // initialize semaphore mutex
+semaphore getControl = 0;    // initialize semaphore getControl
 
-semaphore mutex = 1;
-
-semaphore okToAccess = 0;
-
-void get_access(int pid)
-
-{
-
-	sem_wait(mutex);
-
-	while (sumOfID + pid > n)
-
-	{
-
-		numOfProcessWaiting++;
-
-		sem_signal(mutex);
-
-		sem_wait(okToAccess);
-
-		sem_wait(mutex);
-
-	}
-
-	sumOfID += pid;
-
-	sem_signal(mutex);
-
+// Main
+int main(){
+	monitor();   // call monitor() function
+	system("pause");   // freeze output screen upon program completion
+	return 0;
 }
 
-void release_access(int pid)
-
-{
-
-	int i;
-
-	sem_wait(mutex);
-
-	sumOfID -= pid;
-
-	for (i = 0; i < numOfProcessWaiting; ++i) {
-
-		sem_signal(okToAccess);
-
+// Processes waiting for control
+void get_control(int pid){
+	sem_wait(mutex);   // semaphore lock operation on semaphore mutex (decrement mutex count)
+	int total = sumProcessIDs + pid;  // sum of process IDs
+	while (total > n){
+		waitingProcesses++;
+		sem_signal(mutex);    // increment mutex count
+		sem_wait(getControl);   // lock operation (decrement count) on semaphore getControl
+		sem_wait(mutex);   // again decrement mutex count
 	}
-
-	numOfProcessWaiting = 0;
-
-	sem_signal(mutex);
-
+	sumProcessIDs = sumProcessIDs + pid;
+	sem_signal(mutex);  // increment mutex count 
 }
 
-void Monitor()
-
-{
-
-	int id;
-
-	for (id = 0; id<20; id++)
-
-	{
-
-		get_access(id);
-
+// Transferring control
+void release(int pid){
+	sem_wait(mutex);   // lock semaphore mutex
+	sumProcessIDs = sumProcessIDs - pid;
+	for (int i = 0; i < waitingProcesses; ++i) {
+		sem_signal(getControl);    // increment getControl semaphore
 	}
-
-
-
-	for (id = 0; id<20; id++)
-
-	{
-
-		release_access(id);
-
-	}
-
+	waitingProcesses = 0;   // no waiting processes
+	sem_signal(mutex);    // increment mutex semaphore
 }
 
-int main()
-
-{
-
-	Monitor();
-
+// Monitor 
+void monitor(){
+	for (int accessID = 0; accessID<10; accessID++){
+		get_control(accessID);     // if sum of all process IDs < n, coordinate access to file
+	}
+	for (int releaseID = 0; releaseID<10; releaseID++){
+		release(releaseID);   // if sum of all process IDs < n, coordinate release of the file
+	}
 }
