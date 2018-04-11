@@ -1,3 +1,5 @@
 Inputs from user:
 
-
+3
+4
+5
