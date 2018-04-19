@@ -9,6 +9,14 @@
 #include <string.h>
 #include <stddef.h>
 
+
+// edit below -------
+void sighup(int);
+void sigint(int);
+void sigquit(int);
+// ------------------
+
+
 FILE* writeF;
 
 typedef struct dataStruc { int min, max, sum, count; }
@@ -47,3 +55,23 @@ void binarySplit(int lo, int hi, dataStruc* struc)
 
 	int fd[2];
 
+
+
+}
+
+// edit below ------------------------------------
+void sighup(int signo) {
+	signal(SIGHUP, sighup); /* reset signal */
+	printf("CHILD: I have received a SIGHUP\n");
+}
+
+void sigint(int signo) {
+	signal(SIGINT, sigint); /* reset signal */
+	printf("CHILD: I have received a SIGINT\n");
+}
+
+void sigquit(int signo) {
+	printf("My DADDY has Killed me!!!\n");
+	exit(0);
+}
+// -----------------------------------------------
