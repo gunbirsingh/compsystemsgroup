@@ -55,7 +55,53 @@ void binarySplit(int lo, int hi, dataStruc* struc)
 
 	int fd[2];
 
+// edit below ---------------------------------------------------------------------
+	pid_t waitpid(pid_t);
+	pid_t pid;
 
+	pipe(fd);
+
+	pid = fork();
+
+	if (pid < 0)
+	{
+		perror("Error");
+		exit(0);
+	}
+
+	else if (pid == 0) // child
+	{
+
+		fprintf(writeF, "Hi I'm  %d and my parent is %d\n", getpid(), getppid());
+		close(fd[0]);
+		binarySplit((lo + hi) / 2 + 1, hi, struc);
+
+
+		write(fd[1], struc, sizeof(dataStruc));
+		exit(0);
+	}
+	else
+	{
+		close(fd[1]);
+		binarySplit(lo, (lo + hi) / 2, struc);
+		dataStruc new_variables;
+
+		read(fd[0], &new_variables, sizeof(dataStruc));
+
+		if (new_variables.min < struc->min)
+		{
+			struc->min = new_variables.min;
+		}
+		if (new_variables.max > struc->max)
+		{
+			struc->max = new_variables.max;
+		}
+
+		struc->sum += new_variables.sum;
+		struc->count += new_variables.count;
+		waitpid(pid);
+	}
+// ------------------------------------------------------------------------------------
 
 }
 
