@@ -24,34 +24,35 @@ typedef struct dataStruc {    // declare a struct w/ following variables
 }
 dataStruc;
 
-void binarySplit(int lo, int hi, dataStruc *struc)   // binarySplit function for 
+void binarySplit(int lo, int hi, dataStruc *struc)   // binarySplit function
 {
 
 	if (lo == hi) // all valid inputs have been read -- the end
 	{
-		int curr, num;
-		FILE *fp = fopen("data.txt", "r");
+		int curr;
+		int num;
+		FILE *fp = fopen("data.txt", "r");   // open data.txt for reading
 
 		int cs = 0;
-		while (fscanf(fp, "%d\n", &num) != EOF)
+		while (fscanf(fp, "%d\n", &num) != EOF)    // while inputs != -1
 		{
-			if (lo == cs++)
+			if (lo == cs++)  
 			{
 				curr = num;
 			}
 		}
 
-		if (curr < struc->min)
+		if (curr < struc->min)   // if less than *struc.min --> *struc.min = curr
 		{
 			struc->min = curr;
 		}
-		if (curr > struc->max)
+		if (curr > struc->max)   // if greater than *struc.max --> *struc.max = curr
 		{
 			struc->max = curr;
 		}
 
-		struc->sum += curr;
-		struc->count++;
+		struc->sum += curr;   // *struc.sum = *struc.sum + curr
+		struc->count++;  // increment *struc.count
 		return;
 	}
 
@@ -61,11 +62,9 @@ void binarySplit(int lo, int hi, dataStruc *struc)   // binarySplit function for
 	pid_t waitpid(pid_t);
 	pid_t pid;
 
-	// edit below ------------------------------------
-	signal(SIGHUP, sighup); /* set function calls */
+	signal(SIGHUP, sighup);
 	signal(SIGINT, sigint);
 	signal(SIGQUIT, sigquit);
-	// -----------------------------------------------
 
 	pid = fork();
 
@@ -78,7 +77,7 @@ void binarySplit(int lo, int hi, dataStruc *struc)   // binarySplit function for
 	else if (pid == 0) // child
 	{
 
-		fprintf(writeF, "Hi I'm child (%d) and my parent is %d\n", getpid(), getppid());
+		fprintf(writeF, "Hi, I'm process %d and my parent is %d\n", getpid(), getppid());
 		close(fd[0]);
 		binarySplit((lo + hi) / 2 + 1, hi, struc);
 
@@ -108,9 +107,9 @@ void binarySplit(int lo, int hi, dataStruc *struc)   // binarySplit function for
 		waitpid(pid);
 	}
 // ------------------------------------------------------------------------------------
-
 }
 
+// Main
 int main()
 {
 	writeF = fopen("output.txt", "w+");  // create output file for reading & writing
@@ -137,19 +136,18 @@ int main()
 	return(0);   // exit program successfully
 }
 
-// edit below ------------------------------------
-void sighup(int signo) {
-	signal(SIGHUP, sighup); /* reset signal */
-	printf("CHILD: I have received a SIGHUP\n");
+// Signal Handlers
+void sighup(int signum) {   // send signal hang up
+	signal(SIGHUP, sighup);
+	printf("Signal hang up!\n");
 }
 
-void sigint(int signo) {
-	signal(SIGINT, sigint); /* reset signal */
-	printf("CHILD: I have received a SIGINT\n");
+void sigint(int signum) {   // terminate
+	signal(SIGINT, sigint);
+	printf("Terminate!\n");
 }
 
-void sigquit(int signo) {
-	printf("My DADDY has Killed me!!!\n");
+void sigquit(int signum) {   // terminate
+	printf("Terminate!\n");
 	exit(0);
 }
-// -----------------------------------------------
