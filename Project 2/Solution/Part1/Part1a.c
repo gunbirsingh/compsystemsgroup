@@ -10,25 +10,27 @@
 #include <stddef.h>
 
 
-// edit below -------
 void sighup(int);
 void sigint(int);
 void sigquit(int);
-// ------------------
 
+FILE *writeF;
 
-FILE* writeF;
-
-typedef struct dataStruc { int min, max, sum, count; }
+typedef struct dataStruc {    // declare a struct w/ following variables
+	int min;
+	int max;
+	int sum;
+	int count;
+}
 dataStruc;
 
-void binarySplit(int lo, int hi, dataStruc* struc)
+void binarySplit(int lo, int hi, dataStruc *struc)   // binarySplit function for 
 {
 
-	if (lo == hi) // the end
+	if (lo == hi) // all valid inputs have been read -- the end
 	{
 		int curr, num;
-		FILE* fp = fopen("data.txt", "r");
+		FILE *fp = fopen("data.txt", "r");
 
 		int cs = 0;
 		while (fscanf(fp, "%d\n", &num) != EOF)
@@ -59,26 +61,30 @@ void binarySplit(int lo, int hi, dataStruc* struc)
 	pid_t waitpid(pid_t);
 	pid_t pid;
 
-	pipe(fd);
+	// edit below ------------------------------------
+	signal(SIGHUP, sighup); /* set function calls */
+	signal(SIGINT, sigint);
+	signal(SIGQUIT, sigquit);
+	// -----------------------------------------------
 
 	pid = fork();
 
 	if (pid < 0)
 	{
 		perror("Error");
-		exit(0);
+		exit(1);   // unsuccessful termination
 	}
 
 	else if (pid == 0) // child
 	{
 
-		fprintf(writeF, "Hi I'm  %d and my parent is %d\n", getpid(), getppid());
+		fprintf(writeF, "Hi I'm child (%d) and my parent is %d\n", getpid(), getppid());
 		close(fd[0]);
 		binarySplit((lo + hi) / 2 + 1, hi, struc);
 
 
 		write(fd[1], struc, sizeof(dataStruc));
-		exit(0);
+		exit(0);   // successful termination
 	}
 	else
 	{
@@ -103,6 +109,32 @@ void binarySplit(int lo, int hi, dataStruc* struc)
 	}
 // ------------------------------------------------------------------------------------
 
+}
+
+int main()
+{
+	writeF = fopen("output.txt", "w+");  // create output file for reading & writing
+	FILE *fp = fopen("data.txt", "r");   // open existing data.txt file for reading
+	int count = 0;
+	int nums;
+
+	while (fscanf(fp, "%d\n", &nums) != EOF)   // while value from input file is not -1
+	{
+		count++;   // find total number of valid inputs
+	}
+
+	fclose(fp);    // close file
+	dataStruc struc = { .min = INT_MAX, .max = INT_MIN, .sum = 0, .count = 0 };   // initialize structure
+	binarySplit(0, count - 1, &struc);   // call binarySplit function w/ parameters
+
+	fprintf(writeF, "minimum: %d\n", struc.min);   // print struc minimum
+	fprintf(writeF, "maximum: %d\n", struc.max);   // print struc maximum
+	fprintf(writeF, "sum: %d\n", struc.sum);       // print struc sum
+
+	fclose(writeF);  // close file
+
+	system("pause"); // pause system output
+	return(0);   // exit program successfully
 }
 
 // edit below ------------------------------------
