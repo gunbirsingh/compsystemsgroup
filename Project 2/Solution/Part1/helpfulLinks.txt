@@ -1,1 +1,3 @@
 https://stackoverflow.com/questions/13223509/issues-timing-the-thread-functions-of-pthreads-in-c
+
+https://stackoverflow.com/questions/7269709/sending-information-with-a-signal-in-linux
