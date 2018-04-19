@@ -35,7 +35,7 @@ int test_and_set(int *memory)
 	}	
 	else{			
 	  *memory = 1;
-	  return 1;
+	  return 0;
 	}
 }
 
