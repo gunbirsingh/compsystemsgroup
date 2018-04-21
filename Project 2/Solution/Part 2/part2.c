@@ -30,13 +30,9 @@ void sig_func2(int sig){
 
 int test_and_set(int *memory)
 {
-	if(*memory){
-	return 1;
-	}	
-	else{			
-	  *memory = 1;
-	  return 0;
-	}
+	old= *memory;
+	*memory=1;
+	return old;
 }
 
 void func(data *p){
