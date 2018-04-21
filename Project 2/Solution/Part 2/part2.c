@@ -3,9 +3,10 @@
 #include <sys/types.h>
 #include <stdio.h>
 #include <signal.h>
+#include <stdlib.h>
 #include <time.h>
 
-int counter= 0;
+
 
 typedef struct data {
 	char name[10];
@@ -17,8 +18,7 @@ int lock=0;
 
 void sig_func(int sig){
 	write(1, "Caught signal no = %d\n", sig);
-	counter++;
-	printf("First sig func caught signal no = %d and counter = %d\n", sig,counter);
+	printf("First sig func caught signal no = %d\n",sig);
 	signal(sig,sig_func);
 }
 
@@ -30,26 +30,36 @@ void sig_func2(int sig){
 
 int test_and_set(int *memory)
 {
-	old= *memory;
-	*memory=1;
-	return old;
+	if(*memory){
+	return 1;
+	}	
+	else{			
+	  *memory = 1;
+	  return 0;
+	}
 }
 
 void func(data *p){
 	int x;
-	snprintf(p->name,10,"%d",(int) pthread_self());	
-	p->age=(int)(clock())/CLOCKS_PER_SEC;			
-	x=(int)(((int)pthread_self()+getpid())/((getpid()*(int)test_and_set(&lock))));
+	snprintf(p->name,10,"%d\n",(int) pthread_self());
+	p->age= clock( )/ CLOCKS_PER_SEC;
+	do {
+	  if (lock ==0){
+	    __sync_lock_test_and_set(&lock, 1);
+	    continue;
+	  }
+	  x=(int)(((int)pthread_self()+getpid())/((getpid()*__sync_lock_test_and_set(&lock,1))));
+	}while(!lock);
 	sleep(50); //sleep to catch signals
 }
 
 int main (){
 	pthread_t tid1, tid2, tid3;
-	//pthread_attr_t attr;
+	//pthread_attr_t attr = NULL;
 	data d;
 	data *ptr=&d;
+	ptr = (data *)malloc(10*sizeof(char) + sizeof(double));
 	int pid;
-
 	signal (SIGINT,SIG_IGN);
 	pthread_create(&tid1,NULL,(void*)func,ptr);
 	signal(SIGSEGV,sig_func);
@@ -62,12 +72,18 @@ int main (){
 
 	pid=getpid();
 	sleep(10);
+	printf("Line A\n");
 	pthread_kill(tid1,SIGSEGV); 	//Line A 
 	sleep(5);
+	printf("Line B\n");
 	pthread_kill(tid2,SIGSTOP); 	//Line B
+	printf("Line C1\n");
 	alarm(3);			//Line C(1)
-	while(!alrmflag) pause(); 	//Line C(2)		
-	pthread_kill(tid1,SIGINT);	//Line D 
+	printf("Line C2\n");
+	while(!alrmflag) pause(); 	//Line C(2)
+	printf("Line D\n");
+	pthread_kill(tid1,SIGINT);	//Line D
+	printf("Line E\n");
 	pthread_kill(tid3,SIGINT);	//Line E
 	sleep(40);
 	pthread_join(tid1,NULL);
